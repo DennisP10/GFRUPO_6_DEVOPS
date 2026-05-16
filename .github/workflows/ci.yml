@@ -23,3 +23,56 @@ jobs:
       
       - name: Build y test
         run: ./gradlew build --no-daemon
+
+      - name: Build Executable JAR
+        run: ./gradlew bootJar --no-daemon
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: build/libs/*.jar
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+          path: build/libs
+
+      - name: Copy JAR to AWS EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "build/libs/*.jar"
+          target: "~/app"
+          strip_components: 2
+
+      - name: Execute remote SSH commands to launch App
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            kill $(pgrep -f 'user-service') || true
+            
+            if ! command -v java &> /dev/null; then
+              sudo dnf install java-25-amazon-corretto-headless -y
+            fi
+            
+            export DB_HOST="${{ secrets.AWS_RDS_HOST }}"
+            export DB_PORT="5432"
+            export DB_NAME="postgres"
+            export DB_USER="postgres"
+            export DB_PASSWORD="${{ secrets.AWS_DB_PASSWORD }}"
+            
+            nohup java -jar ~/app/*.jar > app.log 2>&1 &
