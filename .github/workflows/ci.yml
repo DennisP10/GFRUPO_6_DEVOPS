@@ -75,4 +75,4 @@ jobs:
             export DB_USER="postgres"
             export DB_PASSWORD="${{ secrets.AWS_DB_PASSWORD }}"
             
-            nohup java -jar ~/app/*.jar > app.log 2>&1 &
+            nohup java -jar ~/app/*.jar > app.log 2>&1 </dev/null &
