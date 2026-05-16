@@ -4,7 +4,6 @@ networks:
   user-service-net:
     driver: bridge
 
-
 services:
   postgres:
     image: mi-postgres:latest
@@ -15,15 +14,15 @@ services:
       POSTGRES_USER: userservice
       POSTGRES_PASSWORD: userservice
     ports:
-      - "5432:5432"
+      - "5435:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U userservice -d userservice"]
+      test: [ "CMD-SHELL", "pg_isready -U userservice -d userservice" ]
       interval: 5s
       timeout: 5s
       retries: 5
-  
+
   user-service:
     image: user-service:latest
     networks:
