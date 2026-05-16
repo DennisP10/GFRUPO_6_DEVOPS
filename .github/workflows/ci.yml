@@ -74,7 +74,16 @@ jobs:
             sudo docker rm user-service-app || true
             
             cd ~/app
-            sudo docker build -t user-service:latest -f /github/workspace/Dockerfile . || cd ~ && sudo docker build -t user-service:latest .
+            
+            cat << 'EOF' > Dockerfile
+            FROM eclipse-temurin:25-jre-alpine
+            WORKDIR /app
+            COPY *.jar app.jar
+            EXPOSE 8080
+            ENTRYPOINT ["java", "-jar", "app.jar"]
+            EOF
+            
+            sudo docker build -t user-service:latest .
             
             sudo docker run -d \
               --name user-service-app \
