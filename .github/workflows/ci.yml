@@ -69,10 +69,11 @@ jobs:
               sudo dnf install java-25-amazon-corretto-headless -y
             fi
             
-            export DB_HOST="${{ secrets.AWS_RDS_HOST }}"
-            export DB_PORT="5432"
-            export DB_NAME="postgres"
-            export DB_USER="postgres"
-            export DB_PASSWORD="${{ secrets.AWS_DB_PASSWORD }}"
-            
-            nohup java -jar ~/app/*.jar > app.log 2>&1 </dev/null &
+            sudo systemd-run --scope --unit=user-service \
+              --description="Spring Boot User Service Grupo 6" \
+              env DB_HOST="${{ secrets.AWS_RDS_HOST }}" \
+              env DB_PORT="5432" \
+              env DB_NAME="postgres" \
+              env DB_USER="postgres" \
+              env DB_PASSWORD="${{ secrets.AWS_DB_PASSWORD }}" \
+              bash -c "exec java -jar /home/ec2-user/app/*.jar > /home/ec2-user/app.log 2>&1"
