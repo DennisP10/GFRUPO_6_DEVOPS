@@ -8,6 +8,7 @@ import com.cat.user.service.domain.User;
 import com.cat.user.service.dto.UserMapper;
 import com.cat.user.service.dto.UserRequest;
 import com.cat.user.service.dto.UserResponse;
+import com.cat.user.service.exceptions.DuplicateUserException;
 import com.cat.user.service.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,9 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserResponse register(UserRequest request) {
+		if (userRepository.existsByCorreoIgnoreCase(request.getCorreo().trim())) {
+			throw new DuplicateUserException(request.getCorreo());
+		}
 		UUID id = UUID.randomUUID();
 		User user = UserMapper.toDomain(request, id);
 		User saved = userRepository.save(user);
