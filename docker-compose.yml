@@ -10,9 +10,9 @@ services:
     networks:
       - user-service-net
     environment:
-      POSTGRES_DB: userservice
-      POSTGRES_USER: userservice
-      POSTGRES_PASSWORD: userservice
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5435:5432"
     volumes:
@@ -32,9 +32,9 @@ services:
     environment:
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_NAME: userservice
-      DB_USER: userservice
-      DB_PASSWORD: userservice
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
     depends_on:
       postgres:
         condition: service_healthy
