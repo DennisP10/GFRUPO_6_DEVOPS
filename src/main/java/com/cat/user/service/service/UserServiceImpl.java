@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserResponse register(UserRequest request) {
-		if (userRepository.existsByCorreoIgnoreCase(request.getCorreo().trim())) {
+		if (userRepository.existsByCorreoIgnoreCase(request.getCorreo())) {
 			throw new DuplicateUserException(request.getCorreo());
 		}
 		UUID id = UUID.randomUUID();

@@ -12,11 +12,11 @@ public final class UserMapper {
 	public static User toDomain(UserRequest req, UUID id) {
 		return User.builder()
 				.id(id)
-				.nombre(req.getNombre().trim())
-				.apellido(req.getApellido().trim())
-				.direccion(req.getDireccion().trim())
-				.telefono(req.getTelefono().trim())
-				.correo(req.getCorreo().trim())
+				.nombre(req.getNombre())
+				.apellido(req.getApellido())
+				.direccion(req.getDireccion())
+				.telefono(req.getTelefono())
+				.correo(req.getCorreo())
 				.build();
 	}
 
