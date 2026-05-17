@@ -116,4 +116,4 @@ jobs:
             sudo systemctl enable user-service
             sudo systemctl restart user-service
             sleep 10
-            sudo systemctl status user-service --no-pager
+            sudo systemctl status user-service --no-pager || { sudo journalctl -u user-service -n 50 --no-pager; exit 1; }
