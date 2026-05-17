@@ -28,7 +28,7 @@ public class User {
 	private String apellido;
 	private String direccion;
 	private String telefono;
-	
+
 	@Column(unique = true)
 	private String correo;
 }
